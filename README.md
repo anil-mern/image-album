@@ -54,16 +54,5 @@ sample image album node.js microservice
 
    2. to run all unit test cases synchronously run command `npm run test`
    
-   
-   
-@ Author
 
-****
-# Srinivas Kanuparthi
-
-Portfolio : http://portfolio-sk.s3-website.us-east-2.amazonaws.com/about-me/index.html
-
-Linkedin  :  https://www.linkedin.com/in/srinivas-kanuparthi-367a36186
-
-****
 
