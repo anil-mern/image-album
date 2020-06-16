@@ -1,62 +1,64 @@
-
-const _ = require('lodash');
-const Image = require('../model/image-mongo-model');
-const Album = require('../model/album-mongo-model');
-const MessageService = require('../lib/queuePublisher')
-
-
-
-
-
+const _ = require("lodash");
+const Image = require("../model/image-mongo-model");
+const Album = require("../model/album-mongo-model");
+const MessageService = require("../lib/queuePublisher");
 
 const service = {
   addAlbum: function (albumData) {
     return new Promise(function (resolve, reject) {
-      let album = new Album(albumData)
+      let album = new Album(albumData);
       album.save(function (err, response) {
         if (err) {
-          reject(error)
+          reject(error);
         } else {
-          resolve(response)
+          resolve(response);
         }
-      })
-    })
+      });
+    });
   },
 
   deleteAlbum: function (albumId) {
     return new Promise(function (resolve, reject) {
-      Image.deleteMany({ albumId: albumId }).then(images => {
-        Album.findOneAndRemove({ _id: albumId }).then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
+      Image.deleteMany({ albumId: albumId })
+        .then((images) => {
+          Album.findOneAndRemove({ _id: albumId })
+            .then((response) => {
+              resolve(response);
+            })
+            .catch((error) => {
+              reject(error);
+            });
         })
-      }).catch(error => {
-        reject(error)
-      });
-    })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   },
 
   addImage: function (imageData) {
     return new Promise(function (resolve, reject) {
-      let image = new Image(imageData)
+      let image = new Image(imageData);
       image.save(function (err, response) {
         if (err) {
-          reject(error)
+          reject(error);
         } else {
           let publshData = {
             data: {
-              "message": 'new image created',
-              "imageId": response._id.toString(),
-              "albumId": response.albumId.toString(),
-              "imageName": response.name
-            }
-          }
-          MessageService.publishMessage(publshData).then(publishResponse => {
-            resolve(response)
-          }).catch(error => {
-            reject(error);
-          })
+              message: "new image created",
+              imageId: response._id.toString(),
+              albumId: response.albumId.toString(),
+              imageName: response.name,
+            },
+          };
+          MessageService.publishMessage(publshData);
+          // .then((publishResponse) => {
+          //   resolve(response);
+          // })
+          // .catch((error) => {
+          //   // reject(error);
+          //   resolve(response);
+          // });
+          resolve(response);
         }
       });
     });
@@ -64,36 +66,44 @@ const service = {
 
   deleteImage: function (imageId) {
     return new Promise(function (resolve, reject) {
-      Image.findOneAndRemove({ _id: imageId }).then(response => {
-        let publshData = {
-          data: {
-            "message": 'image deleted',
-            "imageId": response._id.toString(),
-            "albumId": response.albumId.toString(),
-            "imageName": response.name
-          }
-        }
-        MessageService.publishMessage(publshData).then(publishResponse => {
-          resolve(response)
-        }).catch(error => {
-          reject(error);
+      Image.findOneAndRemove({ _id: imageId })
+        .then((response) => {
+          let publshData = {
+            data: {
+              message: "image deleted",
+              imageId: response._id.toString(),
+              albumId: response.albumId.toString(),
+              imageName: response.name,
+            },
+          };
+          // MessageService.publishMessage(publshData)
+          //   .then((publishResponse) => {
+          //     resolve(response);
+          //   })
+          //   .catch((error) => {
+          //     reject(error);
+          //   });
+
+          resolve(response);
         })
-      }).catch(error => {
-        reject(error)
-      })
-    })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   },
 
   getAlbumImages: function (albumId) {
     return new Promise(function (resolve, reject) {
-      let query = { albumId: albumId }
-      Image.find(query).then(response => {
-        resolve(response)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  }
-}
+      let query = { albumId: albumId };
+      Image.find(query)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+};
 
-module.exports = service
+module.exports = service;
