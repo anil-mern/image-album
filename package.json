@@ -27,7 +27,7 @@
     "hapi-swagger": "^7.7.0",
     "inert": "^4.1.0",
     "lodash": "^4.17.13",
-    "mocha": "^7.1.1",
+    "mocha": "^10.2.0",
     "mongoose": "^5.9.7",
     "request": "^2.80.0",
     "vision": "^4.1.1"
